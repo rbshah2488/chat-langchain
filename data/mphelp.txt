@@ -1,0 +1,449 @@
+This is the home page of the Message Studio PRO space. 
+
+We are delighted that you decided to check out our documentation. This wiki space has the following sections.
+
+Welcome - You are here. Not much more than pleasantries over here.
+
+Concepts - You will learn the basics. Look at an email - decompose it and put it back together.
+Get Started - Here, you will see step-by-step guides on how to get started with a fairly simple message
+Keep Going - Here, you will see how to maintain and monitor your message. You will also learn about the advanced features we have
+Adaptive - Our newest creation for light-weight content scenarios
+Feedback - Tell us how we are doing and how we can improve this documentation. Reach us on slack channel #message-platform.
+Internal - Has pointers to our new developer onboarding guide, architecture/design docs, etc.
+If you are new, we suggest that you go through the first 3 sections in order until you are comfortable to jump around to the topics in section 4. If you have used CMS/Osgood/Message Studio in the past - you can skim sections 1 & 2. You can then pick topics in any section at random. If you are an expert, please consider helping us improve by sharing your knowledge through this site with others
+
+Quick Guide
+
+If you are looking for a quick start guide on authoring emails, please check  Message Studio Authoring - Emails. Thank you, Marios Georgiou, for authoring the quick start guide. 
+
+What is Message Platform
+Message Platform is a system that enables users to author and manage templatized messages and also quickly serves them to millions of users with personalization via multiple communication channels. Imagine you need to send personalized emails to millions of customers, across the globe, within a few minutes and ensuring that each email greets the user with their own name and shows the items that are most likely to be of interest. The Message Platform allows you to do just that. While we are using emails in the above example, we are not limited to emails - we can serve site content, push notification content, display ads, RTM messages, etc.
+
+Message Platform has the following subsystems
+
+Message Studio Pro - which offers a web interface for users to author their message templates
+Message Runtime - which is a distributed system that first customizes messages and then sends it. Message runtime also is able to render images when requested, populating the image with the freshest information we have.
+Message Studio Express - a marketing configuration tool used by the marketing operations to configure the content. 
+Please note: We (the platform team) will not develop content. Developing content is the responsibility of the user. Also, Message Platform sometimes is also referred to as CMS(Content Management System) or Osgood or Message Studio.
+
+Vision
+Message Platform is the BEST place to author content for ANY channel EASILY. Once authored, we can deliver that content QUICKLY to LARGE audiences. We pride ourselves on the ability to use Data, Analytics, and Machine Learning to PERSONALIZE content for maximum IMPACT (customer experience and business impact).
+
+EMAIL BEST PRACTICES
+
+Emails are very different from web pages in that you can't use js and the standards for web HTML are not applicable to emails. First off, notice the variety and share by clients from here. This article goes into more detail on some key constraints in email.
+
+APACHE FREEMARKER
+Apache FreeMarker is an effort undergoing incubation at The Apache Software Foundation (ASF). Incubation is required of all newly accepted projects until a further review indicates that the infrastructure, communications, and decision making process have stabilized in a manner consistent with other successful ASF projects.
+
+FreeMarker is a Java-based Template Engine, originally focusing on dynamic web page generation with MVC software architecture. However, it's a general purpose template engine, with no dependency on servlets or HTTP or HTML, and so it's often used for generating source code, configuration files or e-mails.
+
+Learn about Freemarker at their site. You may also want to read the Wikipedia page
+
+You can actually just try Freemarker coding in this online tool by Kenshoo
+
+WHAT ARE MESSAGES, TEMPLATES, COMPONENTS AND PARAMETERS?
+A message contains content that is delivered by email, message center or shown on the website. When creating a new message, the author outlines a contract defining input variables that will be used to define content within the message.
+A template is a combination of a layout, content, and content enrichment (i.e. data retrieved via service calls) which can render a message. Templates are built with components, placed in a specific order. They also define binding between the message contract parameters and components input variables.
+A Component is written in HTML and uses the FreeMarker templating language to provide a means for data-driven rendering.
+Service wrappers provide a means to leverage network APIs to integrate richer content into emails. Service wrappers are a part of a broader term 'content enrichment'
+
+Message
+The message is responsible for defining the inputs needed for this specific email type. These inputs are given a type and assigned a name so they can be later referenced to render in the email. These values could be the user's id, a max bid of a user, or the item id of an item a user just sold. The types that can be chosen for the input value are: string, boolean, integer, double, float, char, byte, short, long, and null.
+
+Component
+The components are blocks of code that will render a chunk of the email's html. There are three types of components: Subject, Global CSS Header, and Content.
+
+A component in Message Studio is created and connected with these sections:
+
+The Component Contract section declares the local input variables. These are mapped in from outside the component. A variable is given a type, assigned a name, and is either declared as Required or given a default value. These local variables are accessible within the component via normal FreeMarker syntax, like ${variable_name}. These variables are also accessible from the Service Calls section.
+
+The Service Calls section is where the component's service calls are declared to bring in data from eBay's servers to render in the email, like a picture of an item just sold or what a seller's rating is. Select your service call from the drop down and map in the needed variables in the Input Variable Mapping section. Ensure the input variable name defined in the Component Contract section is the same as the service call expects (eg userId). Now the data returned by the service call can be referenced within the component by treating it like a hashmap or array and using normal FreeMarker syntax, like ${service_response.key1.array1[0]}.
+
+The Content Elements section contains the visual text elements that the receiver of the email will read. This is done so text can be translated and rendered in the appropriate language for the reader. Create a new content element by giving it a source text and a text type. The source text is the text that will be rendered, while the text type is the name that will be used to reference the content element in the component content. The content element can reference local variables that were defined in the Component Contract section.
+
+The URLs section defines the urls that are going to be used in the component content. Create a new url by creating a name, a type, a tracking id, and a base path. This process is done so urls can be easily inserted into the email.
+
+A component lastly has the actual content located in the Editor section. This is html content and is going to be block of code that will be inserted into the email. Define the look of the component here by inserting text, input variables, service call response data, content elements, or urls.
+
+Template
+The template is the structure which is responsible for defining what message bundle is going to be used, what components are going to be shown in the email, and mapping the input data from the message bundle to the components.
+
+A template is composed of a Template Id, a Template Name, a Template Type (Site or Marketing), the message bundle, and the selected components.
+
+To create a new email template, select Create New Template click and drag what components you desire to have in your email. You must define a Global CSS Header and a Subject component. You must also select a message bundle type. Once you have selected your components and message bundle, navigate to the Data tab and map your inputs from the message bundle to the input variables in the components.
+
+After this template is saved and published, then when Message Studio is triggered, like when somebody is outbid, the message bundle with the inputs about the specific trigger is created and mapped to the template and its components. The Render Service then renders the components using FreeMarker, maps the variables in, makes the service calls, puts the rendered components in order with what the template specified, and creates the final html of the email.
+
+DECOMPOSING A MESSAGE
+Think of printing a message on a piece of paper and literally cutting parts of the message. Some parts are visible and some are not visible. Let's use an email as an example.
+
+An email is structured as a vertical stacking of components. We do not currently support side by side formatting in Osgood. This type of styling would need to be done in the HTML or CSS markup of the component itself.
+
+To break up an email, split it into distinct, logical components. All tags should open and close within a single component and a component should display one module of an email (i.e. the subject, a message history, the primary message). Before creating a new component, check the current listing of Osgood components to see if it already exists.
+
+Breaking an email into modular components follows the DRY (Don't repeat yourself) principle of development. A component can be used in any email template, given the proper data mappings. Component development also allows for version testing of a specific component. Multiple templates can be built with different versions of the same component and the performance (such as clickthrough rate) of that specific component version can be tested (not yet implemented). When a new, more effective version of a component has been developed, it can be easily included in all other emails that use it by updating the component version in those emails.
+
+We'll walk through an example of the components in an email using the numbered image below of part of the BuyerSuccessv2 email.
+
+Subject: this component is not shown in the rendered email but is important so that the subject line in the receivers inbox is formatted as intended
+CSS: this component also is not explicitly shown in the email, but it is needed to define the general look and feel of the message
+Header/Preheader: this component is a short blurb at the top about the content of the email's message
+Shadow bar: a styled separator
+Logo
+Primary Message: contains the main message of the email and a call to action (CTA) button
+RTM: a customizable placement ("real-time messaging").
+NuME is a similar messaging mechanism that is used in emails.
+Item Detail: information about the item(s) which the email pertains to
+
+
+MESSAGE STUDIO
+
+Create user account(s) in the system by visting message studio user page
+In case of new group create Jira  and slack on team channel #message-platform or get yourself added to an existing group message studio groups with viewer/contributor/administrator role by requesting access from the appropriate group administrator
+Send an email to sabdulkader@ebay.com to get email Id created for your email (if needed). Follow how step 2 of obtain email id to assess need for new email Ids
+Make use of the starter kit to ramp up quickly on the template development. You need to be part of "CMS_GLOBAL_COMPONENT_LIBRARY" to get access to starter kit.
+Clone the below message:
+Go to [starter kit message](https://www.osgood.qa.ebay.com/emsweb/v2/editmessage?messageId=f4b3b231-c0c3-449b-9982-c377bbd1c808)
+Choose "Clone" option
+Change the name of the cloned message
+Optionally, change the group name of the cloned message to your group name
+Save the message
+Clone the below template
+Go to [starter kit template](https://www.osgood.qa.ebay.com/emsweb/v2/edittemplate?templateId=6bdbda81-71c2-9b23-e26f-7140f95f7410)
+Choose "Clone" option
+Change the name of the cloned template
+Change the message in the cloned template to the message cloned previously
+Optionally, change the group name of the cloned message to your group name
+Save the template
+Clone of the components of the template as well and Update/reference the cloned component as you deemed fit.
+You should be able to preview the compnent by choosing "StartedKit Test" value set
+https://wiki.vip.corp.ebay.com/pages/viewpage.action?pageId=568324899
+
+MESSAGE RUNTIME:
+Open POSTMAN
+POST http://www.dispatch-service.stratus.qa.ebay.com/marketing/messaging/v1/dispatch
+Headers:
+               a. Content-Type application/json
+               b. Authorization <Bearer Token>
+               Get the token for marketing@application scope
+Body a. From the message b. Go to Value Sets TAB c. From the "StarterKit Test", select "Generate dispatch JSON" d. Add the following additional paratmers to the JSON: "meta.mail.segment.id": "1", "base.originator.ip": "10.236.74.181", "target.user.email": "sabdulkader@ebay.com", "sender.user.email": "ebay@ebay.com", "meta.mail.content.format": "HTML", "target.user.login": "mgostintsev_us1" e. Put JSON in the body
+Select SEND from the POSTMAN
+
+
+SITE EMAILS
+STEP 1: OBTAIN AN EMAIL ID AND REGISTER IT
+What's an email id?
+To track the performance of emails and to make settings like whether an email is also delivered to My Messages, we need a unique identifier for each email typae.
+Email ID is an unique ID assigned for the site email campaigns (Marketing emails use a campaign id instead). E.g. 11573 is assigned for buyer refund email campaign. A unique email ID is required to onboard campaign in CMS platform.
+WARNING: If you use some random id from someone else, you will run into problems and cause problems for others (You will be messing with their numbers - permanently corrupting their data, their settings will apply to you)
+How do I decide whether or not to create a new email ID? Answer the following questions:
+What? Document use case. For example, cancel an order or cancel a bid.
+Who? Determine targeted customer type. For example, C2C sellers or B2C sellers.
+Why? Define the customer benefit(s). For example, if a cancelled order was successful, the intended benefit of an email sent to the buyer is to buy another similar item.
+How? Identify required data components. For example, item details or case details.
+If a combination of the 4 areas are unique, then a new email ID will be required?
+Decide if you need a new one or can re-use an existing one?
+It does not matter which template or email platform DS2 or Yukon or CMS or Message Platform you use, the id needs to unique to email type (e.g. "Order Confirmation")
+If you already have one and are just migrating the email to Message Platform, you don't need a new one.
+If you need a new email Id?
+You will need approval from the Site Email Central Team before requesting your new site email id. You need to attend the Site Email Office Hours meetings. See details here (ETA: meetings are on Thursdays, depends on thoroughness from your side)
+Once approved, Send short Name and long description (and attach approval) to DL-eBay-Traffic-SiteEmailRegistration
+You will receive a new Email type ID (unique) for each email type requested. (ETA: 1 day)
+Note: This email id is needed to trigger the email from the system. Please note this for triggering
+Register your email id in Site email manager which is located in Campaign Manager's Site email registration page
+STEP 2: PORT YOUR EMAIL OVER
+Clone one of the existing templates that most closely resembles your email need.
+Configure components by
+modifying the text
+Add flavors
+
+
+
+
+
+
+You may add more components from the standard library
+If you need additional components, please send a request (TO DO: how does someone send a request to us).
+Develop/Edit the contract (collection of all input parameters for all the components you need)
+Set up data mappings between message and components in the template definition page.
+Localize the template if required. follow the steps explained in this video for localization (start from 18th minute). http://myroom-na.adobeconnect.com/p7qo748eoqb/
+Set up seed list of users and test your template in staging.
+Set up many test parameter sets that show all "Flavors"
+Once fully tested in Staging, promote to prod and test once more with a seedlist of users.
+Test emails from Message Studio UI and through dispatch objects
+Test the template using various dispatch scenarios using any REST Client (do we have standard code or postman documented)
+STEP 3: HOW SHOULD YOU THINK ABOUT DATA
+Within each email ID, Module IDs are defined by combinations of the following items:
+Template - which of the global templates was used?
+Component - which of the global components are being leveraged?
+Intra-Component - are there additional components embedded within a component?
+Links - which links are included?
+"Flavors" within each unique email ID are determined by the dimensions we want to track.
+Example of Dimensions that we may track are, but not limited to:
+Language
+Site
+New / Existing
+Business / Consumer
+First time / Repeat user for given email use case
+Etc.
+
+We are assuming that you have decomposed the email and enumerated the necessary inputs for your message. Be sure to know what inputs your trigger is supplying.
+
+We are going to create a simple email to send to users when a new item is created. The email will contain three simple components:
+
+A subject line
+CSS
+The new item component
+We will walk though the following:
+
+Creating a Message/Contract
+Creating components
+Creating a template
+Selecting Channels
+Translating to other languages
+Testing the message
+We recommend that you follow along on Message Studio. Make sure to set the campaign ID which should be set to the site Email Id. Navigate to Message Studio Staging Environment.
+
+CREATING A MESSAGE
+Go to create message option
+click Create New Message. Next, populate the message with the needed input fields in the Message Contract for the email. In this case we need:
+
+user.id
+item.id
+Additionally, the following input fields are required to be in the message contract (although they may be marked optional) to render the relevant content associated with the new item created.
+
+meta.mail.type.id
+email.experiment.id
+email.treatment.id
+email.soj.tags
+email.unique.id
+email.log.id
+target.user.site.id
+target.user.id
+Typically, these inputs will be of type string.
+
+In the provided fields, enter message details, message name, campaign, and a description. Finally, save the message.
+
+Note: image only shows the message contract with inputs relevant to this example.
+
+
+
+SETTING DEFAULT TEMPLATES TO A MESSAGE
+This step need to be performed after creating the template and associating the template to this message
+
+1. Go to the message
+
+2. Expand the ellipsis (...) just below the Group field
+
+3. Set the default templates by selecting the template from the dropdown list against the corresponding channels
+
+
+
+
+
+Note:
+
+You can set different default templates for different channels
+Not performing this step will result in the below error during the message dispatch
+Reason : DESCRIPTOR_EMPTY
+
+Error getting channel default template for channel EMAIL, campaign 12545 and contract 50b6fb15-fe47-4697-873d-d24463ca4611...MessageMetaException: DESCRIPTOR_EMPTY: No templates in descriptor
+
+A template is a combination of a layout, content, and content enrichment (i.e. data retrieved via service calls) which can render a message. Templates are built with components, placed in a specific order. They also define binding between the message contract parameters and components input variables.
+
+When creating a template in Message Studio Pro, you can
+
+Specify template details including name, type and associated message
+Add components to the template and specify the mapping between components and message contract inputs
+Template Details
+We now will link our message to the components we will use in our email. Click 'Create Template' menu option in Message Studio. Under template details, fill in the necessary information. We'll call this template "TEST Template", of type "Site" for message "TEST Message" and from address "ebay@ebay.com".
+
+
+
+
+Components
+Next, we will add our components. A Component is written in HTML and uses the FreeMarker templating language to provide a means for data-driven rendering. We omit the process for adding the Subject and CSS for brevity, but know that both a Subject and CSS are required for every template and the template will not save if these components are not present.
+
+Go to the Components tab and search for the component "TEST New Item". Click and drag the component from the left of the screen into a Placement on the right. After the component is placed, click the Data tab and define the Value for each Component Input. Choose trigger as the source for both userId and itemId, then select the values for these inputs as user.id and item.id respectively. This is the step that links the message contract to the component contract, mapping the message inputs into their proper components. The result of all three mapped components is shown in the image.
+
+
+
+Publishing
+Once all components have been placed and variables properly mapped, click the Save button to save the current version of your template. Saving the template will increment the template's version, which can be found by navigating to the Templates tab and searching for your template with the search bar on the right side of the page. The template version will appear in the table in the center of the page. Finally, publish the template by clicking Publish on the template page. The template should be ready to be rendered.
+
+Notes:
+
+Make sure you render using the current version number of your template. Older versions may render but will not reflect the most recently changes.
+Make sure up publish the template after saving. This will ensure that your most recent changes are published to the current template version number.
+LOCALIZING THE TEMPLATE
+Now that we have a working template, we need to make sure our content elements can be rendered in all the different languages supported by the eBay platform.
+
+Uses can request translation of their components/resources by uploading to L10N github. Message studio ecosystem polls github every 15 minutes to import translations that are available. Users typically iterate on this process with multiple versions of their components and can choose to publish their component/templates to production after testing. The translations will automatically populate the content elements in Message Studio as they are created and pushed to Github by L10n. Content element changes can also be pushed manually to the EN folder of the repo. Detailed instructions for localizing your template is in the L10N - Localization section.
+
+RENDERING AND TESTING MESSAGE STUDIO TEMPLATES
+Message Studio preview function
+Message Studio provides a built in function for previewing the current state of your template. First, navigate to the message your template uses to create a Default value set.
+
+Give the value set a name, then click Edit and enter the needed values in for each variable in the message contract (these values can be left blank).
+
+
+
+
+
+Click Preview on the template page, then selected the default set you want to use to render the template and click Preview (in the new window).
+
+Creating a component involves:
+
+Specifying the component contract
+Adding service calls to obtain additional content for the component
+Defining content elements to be used and translated through l10n
+Writing HTML and FreeMarker to define the structure of the template when it is rendered
+Component Contract
+As mentioned, this email will have three components. However, since components are reusable we will only have to create one new component - the content component which is the body of the email telling the receiver that a new item listing has been created.
+
+Navigate to the Components tab in Message Studio and click Create New Component.
+Name the component and give it a module ID if applicable. The component we are building will contain content for the email, so we select Content as the component type.
+Click the Data tab and specify the component contract.
+These are the variable names to which the message contract variables will be mapped in the template. They should be similar to the message contract names to make mapping in the templates easier.
+The names may not contain periods due to restrictions in the FreeMarker template parser.
+Add the names userId and itemId as variables and give them both type string.
+
+
+Service Calls
+Note: do not use GetUserDetails or GetItemAndUserDetails. This is a dated example. These calls will fail unexpectedly.
+
+We want to populate our email with more than just user and item id numbers. To do this, we use Service Calls, to make calls to eBay APIs to get more detailed information and content to add to our email.
+
+In Message Studio, click the plus icon under Service Calls menu and select the GetItemAndUserDetails service call. Note: this call is only used for the tutorial - please see this page for more details on service calls in Message Studio. Next, select the Input Variable Mapping from the list of variables in the component contract. These inputs are used as the inputs to the API. Finally, give the service call a Reference ID of "item". This id will be used to refer to it in the content of the component. The service call will return the content related to the item that we want to render in our email.
+
+
+
+We can access the service call in the content as follows:
+
+
+
+For copying and pasting:
+
+<#-- Greeting -->
+<h1>${l10n.formatContent("greeting")}</h1>
+ 
+<#-- Message -->
+<h2>${l10n.formatContent("message")}</h2>
+ 
+<#-- Use some data from the service call -->
+<a href="${items.item_001.itemUrl}">${items.item_001.title}: ${items.item_001.price}</a><br />
+<img src="${items.item_001.pictureUrl}" alt="${items.item_001.title}">
+
+
+
+Notes
+
+Using items.item_001 to access the returned object is unique to this call wrapper
+Using a headerless service call returns JSON and is accessed as normal JSON (assuming our reference ID is "items")
+items.items.item[0].title <#-- to access in FreeMarker -->
+
+or
+
+${items.items.item[0].title} <#-- to render in the HTML -->
+
+Content elements
+We need our emails to contain content in the language of their receivers. Message Studio uses a localization (l10n) mechanism to automatically use the correct content translations when rendering the email. We are going to create two content elements for our message:
+
+A greeting
+An alert that a new item has been posted
+Click the Translations tab in Message Studio and the click Add Content Element. The "source text" should be the text of the content element in English. The "source text type" should be the name used to refer to the content element in the component. First, add the greeting. We are using "Hi" for the source text and "greeting" for the "source text type". Next add, the message (as shown in the screenshot) with the source text "A new message has been added" and the source text type "message". Note: all content elements, when collapsed, will show the text "new content-element" until the component is first saved and then refreshed.
+
+
+
+Component content
+We will now use the content elements we have created and the payload of the service call to build our component. The contains a combination of FreeMarker, styled HTML and l10n calls, to render content. Our simple component will greet the user using the content element we created, then use our message content element to explain why the email has been sent. Finally, we will add some of the content from the service call to tell the recipient of the email the name and picture of the item has been added and it's price.
+
+Tips:
+
+To render variables from the component contract or service calls, use
+${variableName}
+To render content elements, use
+${l10n.formatContent("source_text_type")}
+Only use ${ } to render directly to the HTML. If you are accessing these elements as variables in FreeMarker, the ${ } should be omitted.
+Don't forget to save the component!
+
+
+Unsupported FTL directives
+Some of the FTL commands may destabilize messaging platform (excess load in render service, negative performance impact, breaking separation of concern, ...). This is the reason why Message Studio contains FTL code validation. It scans through the components and raises warnings whenever an unsupported FTL directive is found. In the future Message Studio, might prevent saving components or templates which include unsupported FTL directives.
+
+<#stop reason>	Aborts template processing with the given (optional) error message.	Some of the authors are using this command to solve audience selection problems. Our systems are built for generating content and delivering to our customers, but not to handle audience selection problems.
+
+Here are list of short links to access various tools and features of Message Studio Pro
+
+go/mspro/go	Link to this page
+go/mspro	Open Message Studio Pro
+go/mspro/t	Open Templates Page 
+go/mspro/m	Open Messages Page 
+go/mspro/c	Open Components page 
+go/msexpress	Open Message Studio Express
+go/mspro/stg-kib	Open Kibana in Staging Environment
+go/mspro/prd-kib	Open Kibana in Prod Environment
+go/mspro/l10n-faq	Open L10N FAQs
+
+
+Created by Unknown User (rbangalore), last modified by Wang, Yan on Apr 13, 2023
+How to engage Message Studio on-call
+Help and Support documentation is here: https://go/mphelp & https://go/mspro/go & http://go/mspro/l10n-faq
+Check if your question is answered in the Q&A at https://stackoverflow.com/c/ebay/questions/tagged/185
+Access to Stack Overflow, reach out #stackoverflow-engineering-onboarding
+Log a Jira to Project: 'MSGPLSUP', type: 'Support request'.
+a) For production issues: https://go/msg-pl-runtime-support
+b) For non-production issues: https://go/msg-pl-non-runtime-support
+
+c) If email related, please attach a screenshot from a email that had issues reported. In the footer section, look for 'Email reference id'. Please list the GUID in the support request that you log to the Message Platform team. See example image
+SLAs (Service level agreements) for Support Requests
+
+
+
+P1	4 hours	24 hours
+P2	1 day	3 days
+P3	2 days	5 days
+P4	5 days	10 days
+Priority 1 (Critical business impact)
+Critical service issue affecting all users. Service unavailable or unusable with no workaround.
+
+Site email drop across several campaigns
+Marketing email drop across several campaigns
+MSPRO/Composer not accessible or down
+Site Email replay after failures due to platform outage
+Unable to publish any entities(Templates/Renderable message/Creatives etc)
+Email not delivered because of rheos platform network issues or some external platform issues
+Content service down in production network env results in ecm team not able to create campaigns
+
+Priority 2 (Significant business impact)
+Major functionality is severely impaired.
+
+Site email drop in a single campaign
+Marketing email drop in a single campaign
+Issues while rendering entity in MSPRO(production)
+UEP integration issue
+Priority 3 (Limited business impact)
+Minor functionality not working – workaround available. Partial, non-critical loss of functionality of the software.
+
+Issues while previewing entity in MSPRO
+Issues while rendering entity in MSPRO(staging)
+L10N support
+L10N translation not updating
+Flush new content doesn't work
+L10N shows one content while preview shows another content
+Service Wrapper creation/update/deprecation
+Tracking
+Track DSS table details for a certain campaign
+Configure template in MSE banner admin tool
+
+Priority 4 (Minimal business impact)
+General Usage Questions
+
+General configuration or use questions.
+New Campaign ID creation
+Migrate MSPRO message V1 to V2
+Request for Kibana access
+Creation of group in MSPRO
+Find owners of email/myMessage
+Find templates using a wrapper
