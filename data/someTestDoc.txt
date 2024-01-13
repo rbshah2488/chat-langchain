@@ -1,0 +1,9 @@
+What is Message Platform
+Message Platform is a system that enables users to author and manage templatized messages and also quickly serves them to millions of users with personalization via multiple communication channels. Imagine you need to send personalized emails to millions of customers, across the globe, within a few minutes and ensuring that each email greets the user with their own name and shows the items that are most likely to be of interest. The Message Platform allows you to do just that. While we are using emails in the above example, we are not limited to emails - we can serve site content, push notification content, display ads, RTM messages, etc.
+
+Message Platform has the following subsystems
+
+Message Studio Pro - which offers a web interface for users to author their message templates
+Message Runtime - which is a distributed system that first customizes messages and then sends it. 
+                  Message runtime also is able to render images when requested, populating the image with the freshest information we have.
+Message Studio Express - a marketing configuration tool used by the marketing operations to configure the content.

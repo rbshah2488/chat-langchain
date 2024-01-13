@@ -22,7 +22,7 @@ def load_platform_docs():
     
 
 def load_documents_from_files():
-    txt_files = ["./data/mphelp.txt"]
+    txt_files = ["./data/someTestDoc.txt"]
     txt_loaders = [TextLoader(file_name) for file_name in txt_files]
     documents = []
     for loader in txt_loaders:

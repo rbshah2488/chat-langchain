@@ -95,20 +95,7 @@ def load_api_docs():
         ),
     ).load()
 
-
-def ingest_docs():
-    docs_from_documentation = load_langchain_docs()
-    logger.info(f"Loaded {len(docs_from_documentation)} docs from documentation")
-    docs_from_api = load_api_docs()
-    logger.info(f"Loaded {len(docs_from_api)} docs from API")
-    docs_from_langsmith = load_langsmith_docs()
-    logger.info(f"Loaded {len(docs_from_langsmith)} docs from Langsmith")
-
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=4000, chunk_overlap=200)
-    docs_transformed = text_splitter.split_documents(
-        docs_from_documentation + docs_from_api + docs_from_langsmith
-    )
-
+def ingest_docs_helper(docs_transformed):
     # We try to return 'source' and 'title' metadata when querying vector store and
     # Weaviate will error at query time if one of the attributes is missing from a
     # retrieved document.
@@ -132,6 +119,8 @@ def ingest_docs():
         attributes=["source", "title"],
     )
 
+    print(f"weavite client: {client}")
+    print(f"RECORD_MANAGER_DB_URL: {RECORD_MANAGER_DB_URL}")
     record_manager = SQLRecordManager(
         f"weaviate/{WEAVIATE_DOCS_INDEX_NAME}", db_url=RECORD_MANAGER_DB_URL
     )
@@ -141,7 +130,6 @@ def ingest_docs():
         docs_transformed,
         record_manager,
         vectorstore,
-        cleanup="full",
         source_id_key="source",
         force_update=(os.environ.get("FORCE_UPDATE") or "false").lower() == "true",
     )
@@ -151,6 +139,20 @@ def ingest_docs():
     logger.info(
         f"LangChain now has this many vectors: {num_vecs}",
     )
+    
+def ingest_docs():
+    docs_from_documentation = load_langchain_docs()
+    logger.info(f"Loaded {len(docs_from_documentation)} docs from documentation")
+    docs_from_api = load_api_docs()
+    logger.info(f"Loaded {len(docs_from_api)} docs from API")
+    docs_from_langsmith = load_langsmith_docs()
+    logger.info(f"Loaded {len(docs_from_langsmith)} docs from Langsmith")
+
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=4000, chunk_overlap=200)
+    docs_transformed = text_splitter.split_documents(
+        docs_from_documentation + docs_from_api + docs_from_langsmith
+    )
+    ingest_docs_helper(docs_transformed)
 
 
 if __name__ == "__main__":

@@ -1,16 +1,18 @@
-First time
+First time set up on a machine
 ------------------------------------
-1. poetry env use 3.11 ( to resolve ModuleNotFoundError: No module named 'distutils', looks like package is removed in 3.12)
-2. brew install postgresql (Required for communication with record manager postgress database)
-3. poetry install
-4. poetry shell (Creates and activates virtual env) 
-5. Set up weavite database , 
-6. Set up record manager using supabase
-7. Disable langchian tracing for now
-8. Export all enviroment variables
-9. If you get sqlalchemy.exc.NoSuchModuleError: Can't load plugin: sqlalchemy.dialects:https then it means you are using API endpoint instead of database URL for record manager. Get the correct one
-10. python ingest.py ( to load documents)
-11. Access the application at http://127.0.0.1:8080/docs
+1. Install poetry ( pipx install poetry)
+2. poetry env use 3.11 ( to resolve ModuleNotFoundError: No module named 'distutils', looks like package is removed in 3.12)
+3. brew install postgresql (Required for communication with record manager postgress database)
+4. poetry install
+5. poetry shell (Creates and activates virtual env) 
+6. Set up weavite database , 
+7. Set up record manager using supabase
+8. Disable langchian tracing for now
+9. Export all enviroment variables
+10. If you get sqlalchemy.exc.NoSuchModuleError: Can't load plugin: sqlalchemy.dialects:https 
+    then it means you are  using API endpoint instead of database URL for record manager. Get the correct one
+11. python ingest.py ( to load documents)
+12. Access the application at http://127.0.0.1:8080/docs
 
 Setting up new workspace on same machine
 ------------------------------------------

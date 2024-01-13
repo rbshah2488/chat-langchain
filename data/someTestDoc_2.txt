@@ -1,0 +1,13 @@
+SomeOtherVectorDB is an embedding database, one of the great ones.
+SomeOtherVectorDB makes it easy to build LLM apps by making knowledge, facts, and skills pluggable for LLMs.
+SomeOtherVectorDB gives you the tools to:
+store embeddings and their metadata
+embed documents and queries
+search embeddings
+SomeOtherVectorDB prioritizes:
+simplicity and developer productivity
+analysis on top of search
+it also happens to be very quick
+SomeOtherVectorDB consists of a Python client SDK, JavaScript/TypeScript client SDK and a server application. Check out the Colab demo.(yes, it can run in a notebook 😄)
+Python
+In Python, SomeOtherVectorDB can run in-memory or in client/server (in alpha) mode.
